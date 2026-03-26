@@ -1,0 +1,135 @@
+/* liga/static/css/estilos.css */
+
+/* 1. Importamos una fuente más gruesa y "bouncy" (estilo Nintendo) */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+
+body {
+    /* Fondo con un patrón de diamantes/triángulos muy sutil en tonos celestes */
+    background-color: #e0f7fa;
+    background-image: linear-gradient(135deg, #b2ebf2 25%, transparent 25%), 
+                      linear-gradient(225deg, #b2ebf2 25%, transparent 25%), 
+                      linear-gradient(45deg, #b2ebf2 25%, transparent 25%), 
+                      linear-gradient(315deg, #b2ebf2 25%, #e0f7fa 25%);
+    background-position: 10px 0, 10px 0, 0 0, 0 0;
+    background-size: 20px 20px;
+    background-attachment: fixed;
+    
+    font-family: 'Nunito', sans-serif;
+    color: #1a365d;
+}
+
+/* 2. Banner Superior (Estilo Cinta de Menú de Juego) */
+.navbar-poke {
+    background: linear-gradient(180deg, #00b4d8 0%, #0077b6 100%);
+    border-bottom: 5px solid #03045e;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    padding: 15px 0;
+}
+
+.navbar-poke .navbar-brand {
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: #ffffff !important;
+    text-shadow: 2px 3px 0px #03045e; /* Sombra dura estilo arcade */
+    letter-spacing: 1px;
+}
+
+/* 3. El Panel Principal (Reemplaza la tarjeta aburrida) */
+.game-panel {
+    background-color: #ffffff;
+    border: 5px solid #0077b6;
+    border-radius: 25px;
+    box-shadow: 0 15px 0px rgba(0, 119, 182, 0.2), 0 20px 25px rgba(0,0,0,0.15);
+    padding: 0;
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.game-panel-header {
+    background: linear-gradient(90deg, #ff9e00 0%, #ff6d00 100%);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 5px solid #0077b6;
+    font-weight: 900;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0px #d00000;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* 4. Tabla de Clasificación */
+.table-poke th {
+    background-color: #caf0f8 !important;
+    color: #0077b6 !important;
+    font-weight: 900;
+    font-size: 0.9rem; /* Letra más chica */
+    border-bottom: 3px solid #90e0ef;
+    padding: 8px; /* Espacio interno reducido */
+}
+
+.table-poke td {
+    vertical-align: middle;
+    font-weight: 700;
+    font-size: 1rem; /* Letra normal */
+    border-bottom: 2px solid #caf0f8;
+    padding: 6px; /* Filas mucho más delgadas */
+}
+
+/* 5. Botones 3D (El toque de videojuego real) */
+.btn-game {
+    border-radius: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 4px 12px; /* Botones menos altos */
+    font-size: 0.8rem; /* Texto más chico */
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.1s;
+    text-decoration: none;
+    text-align: center;
+}
+
+/* Reducimos también un poco el título de la tabla */
+.game-panel-header {
+    background: linear-gradient(90deg, #ff9e00 0%, #ff6d00 100%);
+    color: white;
+    padding: 8px; /* Título más delgado */
+    text-align: center;
+    border-bottom: 4px solid #0077b6;
+    font-weight: 900;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 0px #d00000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Botón Retar (Amarillo/Naranja) */
+.btn-retar {
+    background: linear-gradient(180deg, #ffea00 0%, #ffaa00 100%);
+    color: #ffffff !important;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 0px #cc5500, 0 10px 10px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 0px #cc5500;
+}
+
+.btn-retar:active {
+    transform: translateY(6px); /* Efecto de que se presiona físicamente */
+    box-shadow: 0 0px 0px #cc5500, 0 2px 3px rgba(0,0,0,0.2);
+}
+
+/* Botón Cerrar Sesión (Rojo) */
+.btn-logout {
+    background: linear-gradient(180deg, #ff4d4d 0%, #cc0000 100%);
+    color: #ffffff !important;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 0px #800000;
+    text-shadow: 1px 1px 0px #800000;
+    font-size: 0.8rem;
+    padding: 5px 15px;
+}
+
+.btn-logout:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0px #800000;
+}

@@ -1,0 +1,112 @@
+{% extends "liga/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="pokemon-card p-4 shadow-lg border-0">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-7">
+            <h1 class="display-4 font-weight-bold text-primary" style="font-family: 'Kanit', sans-serif; letter-spacing: -1px;">RANKING GLOBAL</h1>
+            <p class="text-muted lead">La élite de la Liga Eclipse Warriors.</p>
+        </div>
+        <div class="col-md-5">
+            <form method="GET" class="form-inline justify-content-end">
+                <div class="input-group shadow-sm w-100" style="border-radius: 50px; overflow: hidden; border: 2px solid #2a75bb; background: white;">
+                    <input type="text" name="q" class="form-control border-0" placeholder="Buscar entrenador..." value="{{ query|default:'' }}" style="background: transparent;">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary border-0 px-4" type="submit" style="background-color: var(--poke-blue);"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover border-0">
+            <thead class="text-uppercase small font-weight-bold text-muted" style="background: #f8f9fa;">
+                <tr>
+                    <th class="border-0 text-center">Pos</th>
+                    <th class="border-0">Entrenador</th>
+                    <th class="border-0 text-center">Puntos</th>
+                    <th class="border-0 text-center">Rango</th>
+                    <th class="border-0 text-center">Winrate (V - D)</th>
+                    <th class="border-0 text-center">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in page_obj %}
+                <tr class="align-middle">
+                    <td class="text-center align-middle py-4">
+                        <span class="h4 font-weight-bold text-muted" style="opacity: 0.5;">#{{ forloop.counter|add:page_obj.start_index|add:-1 }}</span>
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex align-items-center">
+                            {% if j.avatar and j.avatar.url %}
+                                <img src="{{ j.avatar.url }}" class="rounded-circle mr-3 shadow-sm" style="width: 55px; height: 55px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                            {% else %}
+                                <div class="rounded-circle mr-3 bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 55px; height: 55px; border: 3px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-user fa-lg text-muted" style="opacity: 0.4;"></i>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'public_perfil' j.id %}" class="h5 font-weight-bold text-dark d-block mb-0" style="font-family: 'Open Sans', sans-serif;">{{ j.nickname_pokemmo }}</a>
+                                <small class="text-muted font-italic">"{{ j.lema|truncatechars:35 }}"</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center align-middle">
+                        <span class="h5 font-weight-bold text-primary">{{ j.puntuacion }}</span>
+                    </td>
+                    <td class="text-center align-middle">
+                        <span class="rank-badge {{ j.rango|lower }}">
+                            <i class="fas {% if j.rango == 'Maestro' %}fa-crown{% else %}fa-medal{% endif %} mr-1"></i>
+                            {{ j.rango }}
+                        </span>
+                    </td>
+                    <td class="text-center align-middle" style="min-width: 160px;">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="mb-1 small">
+                                <span class="text-success font-weight-bold">{{ j.victorias }}V</span>
+                                <span class="text-muted mx-1">-</span>
+                                <span class="text-danger font-weight-bold">{{ j.derrotas }}D</span>
+                                <span class="badge badge-light border ml-1">{{ j.winrate }}%</span>
+                            </div>
+                            <div class="progress w-100" style="height: 6px; border-radius: 10px; background-color: #eee;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width:{{j.winrate}}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center align-middle">
+                        {% if user.is_authenticated and user.jugador and user.jugador != j %}
+                            <form action="{% url 'retar' j.id %}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-sm rounded-pill px-4 shadow-sm font-weight-bold">⚔️ RETAR</button>
+                            </form>
+                        {% elif user.jugador == j %}
+                            <span class="badge badge-light border text-muted px-3 py-2">TÚ</span>
+                        {% elif not user.is_authenticated %}
+                            <small class="text-muted">Logueate</small>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center py-5 text-muted">No hay entrenadores registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link border-0 shadow-sm mx-1 rounded-circle text-primary" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"><i class="fas fa-chevron-left"></i></a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link border-0 shadow-sm mx-1 rounded-circle bg-primary font-weight-bold">{{ page_obj.number }}</span></li>
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link border-0 shadow-sm mx-1 rounded-circle text-primary" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}"><i class="fas fa-chevron-right"></i></a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

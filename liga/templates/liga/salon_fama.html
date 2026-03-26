@@ -1,0 +1,62 @@
+{% extends "liga/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 font-weight-bold" style="color: #d4af37; font-family: 'Kanit', sans-serif;">HALL OF FAME</h1>
+        <p class="text-muted">Las leyendas que dominaron el ranking.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        {% for t in temporadas %}
+        <div class="col-md-8 mb-5">
+            <div class="pokemon-card shadow-lg border-0">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h2 class="h4 mb-0 font-weight-bold">TEMPORADA {{ t.numero }}: {{ t.nombre }}</h2>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div class="row align-items-end justify-content-center">
+                        
+                        <div class="col-4">
+                            <div class="p-3 bg-light rounded shadow-sm mb-2" style="border-bottom: 5px solid #c0c0c0;">
+                                <i class="fas fa-medal fa-2x mb-2" style="color: #c0c0c0;"></i>
+                                <h5 class="font-weight-bold mb-0">{{ t.puesto_2|default:"---" }}</h5>
+                                <small class="text-muted">Subcampeón</small>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="p-4 bg-white rounded shadow border mb-3" style="border-bottom: 8px solid #d4af37 !important;">
+                                {% if t.foto_1 %}
+                                    <img src="{{ t.foto_1.url }}" class="avatar-sm mx-auto mb-3" style="width: 80px; height: 80px; border: 3px solid #d4af37;">
+                                {% else %}
+                                    <i class="fas fa-crown fa-3x mb-3 text-warning"></i>
+                                {% endif %}
+                                <h4 class="font-weight-bold mb-1" style="color: #d4af37;">{{ t.puesto_1|default:"---" }}</h4>
+                                <div class="badge badge-warning">CAMPEÓN</div>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="p-3 bg-light rounded shadow-sm mb-2" style="border-bottom: 5px solid #cd7f32;">
+                                <i class="fas fa-medal fa-2x mb-2" style="color: #cd7f32;"></i>
+                                <h5 class="font-weight-bold mb-0">{{ t.puesto_3|default:"---" }}</h5>
+                                <small class="text-muted">Tercer Puesto</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center small text-muted">
+                    Finalizada el {{ t.fecha_fin }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <i class="fas fa-hourglass-start fa-4x text-muted mb-3"></i>
+            <h3>La Temporada 1 está en marcha.</h3>
+            <p>Aún no hay ganadores registrados.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

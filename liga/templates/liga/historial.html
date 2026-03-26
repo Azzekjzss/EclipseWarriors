@@ -1,0 +1,145 @@
+{% extends "liga/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h1 class="display-4 font-weight-bold" style="color: #2a75bb; font-family: 'Kanit', sans-serif;">
+            <i class="fas fa-history"></i> RESUMEN DE BATALLAS
+        </h1>
+        <p class="text-muted">La crónica oficial de los enfrentamientos.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        {% for combate in combates %}
+        <div class="col-md-10 col-lg-6 mb-3">
+            <div class="battle-card shadow-sm">
+                
+                <div class="battle-header px-3 pt-2">
+                    <small class="text-muted"><i class="far fa-calendar-alt"></i> {{ combate.fecha_finalizacion|date:"d/m/Y H:i" }}</small>
+                </div>
+
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center no-gutters text-center">
+                        
+                        <div class="col-5">
+                            <a href="{% url 'public_perfil' combate.retador.id %}" class="trainer-link">
+                                {% if combate.retador.avatar %}
+                                    <img src="{{ combate.retador.avatar.url }}" class="avatar-battle shadow-sm">
+                                {% else %}
+                                    <div class="avatar-battle-placeholder mx-auto"><i class="fas fa-user text-muted"></i></div>
+                                {% endif %}
+                                <div class="trainer-name mt-1">{{ combate.retador.nickname_pokemmo }}</div>
+                            </a>
+                        </div>
+
+                        <div class="col-2">
+                            <span class="vs-text">VS</span>
+                        </div>
+
+                        <div class="col-5">
+                            <a href="{% url 'public_perfil' combate.oponente.id %}" class="trainer-link">
+                                {% if combate.oponente.avatar %}
+                                    <img src="{{ combate.oponente.avatar.url }}" class="avatar-battle shadow-sm">
+                                {% else %}
+                                    <div class="avatar-battle-placeholder mx-auto"><i class="fas fa-user text-muted"></i></div>
+                                {% endif %}
+                                <div class="trainer-name mt-1">{{ combate.oponente.nickname_pokemmo }}</div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2 pt-2 border-top align-items-center">
+                        <div class="col-12 text-center">
+                            <div class="winner-tag mb-1">
+                                <i class="fas fa-trophy text-warning mr-1"></i> GANÓ {{ combate.ganador.nickname_pokemmo|upper }}
+                            </div>
+                            <div class="points-summary small font-weight-bold">
+                                <span class="text-success">+{{ combate.puntos_ganados|default:"20" }} Pts</span>
+                                <span class="mx-2 text-light">|</span>
+                                <span class="text-danger">-{{ combate.puntos_perdidos|default:"15" }} Pts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-md-8 text-center py-5 bg-white shadow-sm rounded-lg">
+            <i class="fas fa-hourglass-start fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+            <h4 class="text-muted">No hay duelos registrados todavía.</h4>
+            <a href="{% url 'ranking' %}" class="btn btn-primary btn-sm rounded-pill mt-2">Buscar rivales</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Estilos de la Card Compacta */
+    .battle-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid #f0f2f5;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .battle-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Avatares Reducidos */
+    .avatar-battle {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+    }
+    .avatar-battle-placeholder {
+        width: 55px; height: 55px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        display: flex; align-items: center; justify-content: center;
+        border: 3px solid white;
+    }
+
+    /* Tipografías */
+    .trainer-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .vs-text {
+        font-family: 'Kanit', sans-serif;
+        font-weight: 900;
+        font-style: italic;
+        color: #ff1c1c;
+        font-size: 1.2rem;
+    }
+
+    /* Badge de Ganador Minimalista */
+    .winner-tag {
+        background: #f0f7ff;
+        color: #2a75bb;
+        border-radius: 20px;
+        padding: 2px 12px;
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+
+    /* Enlaces a Perfiles */
+    .trainer-link {
+        text-decoration: none !important;
+        display: block;
+        transition: opacity 0.2s;
+    }
+    .trainer-link:hover {
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}

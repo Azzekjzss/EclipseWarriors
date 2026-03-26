@@ -1,0 +1,10 @@
+{% extends "liga/base.html" %}
+{% block content %}
+<div class="alert alert-info p-5 text-center pokemon-card border-info">
+    <i class="fas fa-exclamation-circle fa-4x mb-3 text-info"></i>
+    <h2>¡Hola, {{ user.username }}!</h2>
+    <p class="lead">Parece que tu cuenta no tiene un perfil de entrenador activo.</p>
+    <p>Esto sucede si el perfil fue eliminado recientemente. ¡No te preocupes!</p>
+    <a href="{% url 'editar_perfil' %}" class="btn btn-success btn-lg rounded-pill px-5 mt-3 shadow">CREAR MI PERFIL AHORA</a>
+</div>
+{% endblock %}

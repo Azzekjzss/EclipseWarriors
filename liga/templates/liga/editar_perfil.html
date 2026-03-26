@@ -1,0 +1,56 @@
+{% extends "liga/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="pokemon-card shadow-lg border-0" style="border-radius: 25px; border-top: 10px solid #2a75bb;">
+                <div class="card-header bg-white border-0 text-center pt-5">
+                    <h2 class="font-weight-bold text-primary" style="font-family: 'Kanit', sans-serif;">CONFIGURACIÓN DE ENTRENADOR</h2>
+                    <p class="text-muted">Personaliza tu identidad en la Liga Eclipse Warriors</p>
+                </div>
+                
+                <div class="card-body px-5 pb-5">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="text-center mb-4">
+                            <label class="d-block text-muted font-weight-bold mb-3">Tu Avatar actual</label>
+                            {% if user.jugador.avatar %}
+                                <img src="{{ user.jugador.avatar.url }}" class="rounded-circle border shadow-sm mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #f1f5f9;">
+                            {% endif %}
+                            <div class="custom-file mt-2">
+                                {{ form.avatar }}
+                                <small class="text-muted d-block mt-2">Sube una imagen cuadrada para mejores resultados.</small>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="form-group">
+                            <label class="font-weight-bold text-dark"><i class="fas fa-id-badge mr-2 text-primary"></i>Nickname PokeMMO</label>
+                            {{ form.nickname_pokemmo }}
+                            {% if form.nickname_pokemmo.errors %}
+                                <div class="text-danger small">{{ form.nickname_pokemmo.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label class="font-weight-bold text-dark"><i class="fas fa-comment-dots mr-2 text-primary"></i>Tu Lema de Batalla</label>
+                            {{ form.lema }}
+                            <small class="text-muted">Se mostrará en tu perfil público para intimidar a tus rivales.</small>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block rounded-pill shadow-lg font-weight-bold py-3">
+                                <i class="fas fa-save mr-2"></i> GUARDAR CAMBIOS
+                            </button>
+                            <a href="{% url 'public_perfil' user.jugador.id %}" class="btn btn-link text-muted mt-3">Cancelar y volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

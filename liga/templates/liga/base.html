@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse Warriors - Liga PokeMMO</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --poke-blue: #2a75bb;
+            --poke-red: #ff1c1c;
+            --poke-yellow: #ffcb05;
+            --bg-light: #f4f7f6;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: #333;
+            font-family: 'Open Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR ESTILO POKÉ BALL --- */
+        .navbar {
+            background-color: var(--poke-blue) !important;
+            border-top: 6px solid var(--poke-red);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            padding: 0.8rem 1rem;
+        }
+
+        .navbar-brand img {
+            height: 45px;
+            transition: 0.3s ease;
+        }
+        .navbar-brand img:hover { transform: scale(1.05); }
+
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-family: 'Kanit', sans-serif;
+            margin: 0 8px;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--poke-yellow) !important;
+            text-shadow: 0 0 8px rgba(255,203,5,0.6);
+        }
+
+        /* --- CONTENEDORES Y TARJETAS --- */
+        .pokemon-card {
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #e1e8ed;
+            overflow: hidden;
+        }
+
+        /* --- CORRECCIÓN DE AVATARES (ELIMINA EL ERROR DE IMAGEN GIGANTE) --- */
+        .avatar-sm {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: block;
+        }
+
+        /* --- BADGES DE RANGO DINÁMICOS --- */
+        .rank-badge {
+            border-radius: 50px;
+            font-weight: bold;
+            padding: 6px 18px;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-family: 'Kanit', sans-serif;
+        }
+        .bronce { background: linear-gradient(135deg, #cd7f32, #a05a2c); }
+        .plata { background: linear-gradient(135deg, #c0c0c0, #7f8c8d); color: #333; text-shadow: none; }
+        .oro { background: linear-gradient(135deg, #ffd700, #f39c12); color: #333; text-shadow: none; font-weight: 900; }
+        .platino { background: linear-gradient(135deg, #e5e4e2, #bdc3c7); color: #333; text-shadow: none; }
+        .diamante { background: linear-gradient(135deg, #b9f2ff, #2980b9); color: white; }
+        .maestro { background: linear-gradient(45deg, #8a2be2, #ff00ff); animation: maestro-glow 2s infinite alternate; }
+
+        @keyframes maestro-glow {
+            from { box-shadow: 0 0 10px #fff; }
+            to { box-shadow: 0 0 25px #ff00ff; }
+        }
+
+        /* Botón de Logout transparente */
+        .btn-logout {
+            background: none; border: none; padding: 0; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark mb-5">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'ranking' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Liga Logo">
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'ranking' %}"><i class="fas fa-trophy mr-1"></i> Ranking</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'historial' %}"><i class="fas fa-history mr-1"></i> Historial</a></li>
+                <li class="nav-item"><a class="nav-link text-warning" href="{% url 'salon_fama' %}"><i class="fas fa-crown mr-1"></i> Salón Fama</a></li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    
+                    {% if user.jugador %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'mis_combates' %}">
+                                <i class="fas fa-swords mr-1"></i> Duelos 
+                                {% if num_alertas > 0 %}<span class="badge badge-danger">{{ num_alertas }}</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'public_perfil' user.jugador.id %}">
+                                <i class="fas fa-user-circle mr-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-info" href="{% url 'editar_perfil' %}">
+                                <i class="fas fa-cog mr-1"></i> Ajustes
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link text-warning font-weight-bold" href="{% url 'editar_perfil' %}">¡CREA TU PERFIL!</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item">
+                        <form method="POST" action="{% url 'logout' %}" class="form-inline d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link btn-logout">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Salir
+                            </button>
+                        </form>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Ingresar</a></li>
+                    <li class="nav-item ml-lg-2">
+                        <a class="nav-link btn btn-warning text-dark px-4 shadow-sm" href="{% url 'registro' %}" style="border-radius: 20px; font-weight:bold;">Registro</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert" style="border-radius: 15px; font-weight: 600;">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{% extends "liga/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="font-weight-bold" style="color: var(--poke-blue); font-family: 'Kanit', sans-serif;">CENTRO DE MANDO</h1>
+        <p class="text-muted">Gestiona tus desafíos y reporta tus resultados.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            
+            {% for combate in combates %}
+            <div class="pokemon-card mb-4 shadow-sm border-0">
+                
+                <div class="card-header bg-white border-0 text-muted small px-4 pt-3 pb-1">
+                    <i class="far fa-clock mr-1"></i> {{ combate.fecha_creacion|date:"d/m/Y H:i" }}
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="row align-items-center text-center">
+                        
+                        <div class="col-5">
+                            <div class="trainer-slot">
+                                {% if combate.retador == user.jugador %}
+                                    {% if combate.oponente.avatar %}
+                                        <img src="{{ combate.oponente.avatar.url }}" class="avatar-sm mb-2">
+                                    {% else %}
+                                        <div class="avatar-sm mb-2 bg-light d-flex align-items-center justify-content-center mx-auto"><i class="fas fa-user text-muted"></i></div>
+                                    {% endif %}
+                                    <div class="font-weight-bold text-dark">{{ combate.oponente.nickname_pokemmo }}</div>
+                                {% else %}
+                                    {% if combate.retador.avatar %}
+                                        <img src="{{ combate.retador.avatar.url }}" class="avatar-sm mb-2">
+                                    {% else %}
+                                        <div class="avatar-sm mb-2 bg-light d-flex align-items-center justify-content-center mx-auto"><i class="fas fa-user text-muted"></i></div>
+                                    {% endif %}
+                                    <div class="font-weight-bold text-dark">{{ combate.retador.nickname_pokemmo }}</div>
+                                {% endif %}
+                                <small class="text-muted">Rival</small>
+                            </div>
+                        </div>
+
+                        <div class="col-2 vs-divider" style="font-family: 'Kanit', sans-serif; font-size: 1.8rem; color: #ff1c1c; font-style: italic;">VS</div>
+
+                        <div class="col-5">
+                            <div class="trainer-slot">
+                                {% if user.jugador.avatar %}
+                                    <img src="{{ user.jugador.avatar.url }}" class="avatar-sm mb-2">
+                                {% else %}
+                                    <div class="avatar-sm mb-2 bg-light d-flex align-items-center justify-content-center mx-auto"><i class="fas fa-user text-muted"></i></div>
+                                {% endif %}
+                                <div class="font-weight-bold text-dark">{{ user.jugador.nickname_pokemmo }}</div>
+                                <small class="text-muted">Tú</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 pt-3 border-top align-items-center">
+                        <div class="col-6">
+                            <span class="badge badge-pill badge-light border px-3 py-2 text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">
+                                Estado: {{ combate.estado }}
+                            </span>
+                        </div>
+                        <div class="col-6 text-right">
+                            {% if combate.estado == 'PENDIENTE' %}
+                                {% if user.jugador == combate.oponente %}
+                                    <a href="{% url 'gestionar_combate' combate.id 'aceptar' %}" class="btn btn-success btn-sm rounded-pill px-4 shadow-sm mb-1" style="font-weight: bold;">ACEPTAR RETO</a>
+                                    <a href="{% url 'gestionar_combate' combate.id 'rechazar' %}" class="btn btn-outline-danger btn-sm rounded-pill px-4" style="font-weight: bold;">Rechazar</a>
+                                {% else %}
+                                    <div class="text-muted small font-italic">Esperando respuesta del rival...</div>
+                                {% endif %}
+                            
+                            {% elif combate.estado == 'ACEPTADO' %}
+                                <a href="{% url 'gestionar_combate' combate.id 'gane' %}" class="btn btn-primary btn-lg rounded-pill px-5 shadow font-weight-bold" style="font-size: 1rem;">
+                                    🥇 ¡GANÉ YO!
+                                </a>
+                            
+                            {% elif combate.estado == 'ESPERANDO' %}
+                                {% if combate.reportado_por == user.jugador %}
+                                    <div class="text-muted small font-italic"><i class="fas fa-clock fa-spin mr-1"></i> Esperando confirmación del rival...</div>
+                                {% else %}
+                                    <div class="small font-weight-bold mb-2">Tu rival reportó su victoria. ¿Confirmas?</div>
+                                    <a href="{% url 'gestionar_combate' combate.id 'confirmar' %}" class="btn btn-warning rounded-pill px-5 shadow-sm font-weight-bold" style="background: linear-gradient(135deg, #ffd700, #ffcb05); border: none;">
+                                        CONFIRMAR DERROTA
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="pokemon-card p-5 text-center shadow-sm">
+                <i class="fas fa-swords fa-4x text-muted mb-3" style="opacity: 0.3;"></i>
+                <h4 class="text-muted">No tienes duelos activos en este momento.</h4>
+                <a href="{% url 'ranking' %}" class="btn btn-primary rounded-pill px-5 mt-3 shadow">Buscar rivales</a>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
